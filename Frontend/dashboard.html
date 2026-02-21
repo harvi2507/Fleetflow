@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Control Dashboard</title>
+<script src="https://kit.fontawesome.com/4c2a8b8f7f.js" crossorigin="anonymous"></script>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: #081229;
+    color: #e6f1ff;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Background Grid */
+.background-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: moveGrid 20s linear infinite;
+    z-index: 0;
+}
+
+@keyframes moveGrid {
+    from { background-position: 0 0; }
+    to { background-position: 40px 40px; }
+}
+
+/* Layout */
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background: rgba(0,0,0,0.75);
+    border-right: 1px solid rgba(0,255,255,0.2);
+    padding: 30px 20px;
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #00ffff;
+    letter-spacing: 2px;
+}
+
+.nav-links {
+    list-style: none;
+}
+
+.nav-links li {
+    margin-bottom: 18px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #e6f1ff;
+    padding: 10px 12px;
+    display: block;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+.nav-links a:hover {
+    background: rgba(0,255,255,0.1);
+    color: #00ffff;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+.main-content h1 {
+    margin-bottom: 30px;
+}
+
+/* Analytics Cards */
+.analytics {
+    display: flex;
+    gap: 30px;
+}
+
+.card {
+    flex: 1;
+    background: rgba(0,0,0,0.65);
+    border: 1px solid rgba(0,255,255,0.2);
+    border-radius: 15px;
+    padding: 30px;
+    position: relative;
+}
+
+.card h3 {
+    margin-bottom: 15px;
+    color: #00ffff;
+}
+
+.card .number {
+    font-size: 42px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card p {
+    color: #8892b0;
+}
+
+/* Small indicator dot */
+.status-dot {
+    width: 10px;
+    height: 10px;
+    background: #00ffff;
+    border-radius: 50%;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #00ffff;
+    border-radius: 3px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="background-grid"></div>
+
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>CONTROL</h2>
+
+        <ul class="nav-links">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="vehicle_register.html">Fleet Management</a></li>
+            <li><a href="trip_dispatcher.html">Dispatch Center</a></li>
+            <li><a href="maintenance_log.html">Maintenance & Repair</a></li>
+            <li><a href="fuel_expenses.html">Fuel Summary</a></li>
+            <li><a href="driver_details.html">Driver Management</a></li>
+             <li><a href="analysis.html">Analytics</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Operational Overview</h1>
+
+       <div class="analytics">
+
+    <div class="card">
+        <div class="status-dot"></div>
+        <h3>Active Journeys</h3>
+        <div class="number" id="activeJourneys">--</div>
+        <p>Vehicles currently on active trips</p>
+    </div>
+
+    <div class="card">
+        <div class="status-dot"></div>
+        <h3>Vehicles in Shop</h3>
+        <div class="number" id="vehiclesInShop">--</div>
+        <p>Under maintenance or inspection</p>
+    </div>
+
+    <div class="card">
+        <div class="status-dot"></div>
+        <h3>Utilization Rate</h3>
+        <div class="number" id="utilizationRate">--%</div>
+        <p>Assigned vehicles vs total fleet</p>
+    </div>
+
+    <div class="card">
+        <div class="status-dot"></div>
+        <h3>Available Vehicles</h3>
+        <div class="number" id="availableVehicles">--</div>
+        <p>Ready for new assignments</p>
+    </div>
+
+</div>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+async function loadDashboardStats() {
+    try {
+        const response = await fetch("http://localhost:3000/api/dashboard-stats");
+        const data = await response.json();
+
+        document.getElementById("activeJourneys").innerText = data.activeJourneys;
+        document.getElementById("vehiclesInShop").innerText = data.vehiclesInShop;
+        document.getElementById("utilizationRate").innerText = data.utilizationRate + "%";
+        document.getElementById("availableVehicles").innerText = data.availableVehicles;
+
+    } catch (error) {
+        console.error("Failed to load dashboard data", error);
+    }
+}
+
+loadDashboardStats();
+</script>
+</body>
+</html>

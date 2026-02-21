@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Control Portal</title>
+<script src="https://kit.fontawesome.com/4c2a8b8f7f.js" crossorigin="anonymous"></script>
+
+<style>
+/* === YOUR SAME CSS (UNCHANGED) === */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#081229;color:#e6f1ff;height:100vh;overflow-x:hidden;}
+.background-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px),linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px);background-size:40px 40px;animation:moveGrid 15s linear infinite;z-index:0;}
+@keyframes moveGrid{from{background-position:0 0;}to{background-position:40px 40px;}}
+header{position:absolute;top:30px;right:50px;z-index:2;}
+.signup-btn{background:transparent;border:1px solid #00ffff;color:#00ffff;padding:8px 18px;border-radius:6px;cursor:pointer;}
+.signup-btn:hover{background:#00ffff;color:#000;}
+.main-container{display:flex;height:100vh;align-items:center;justify-content:center;gap:100px;position:relative;z-index:1;}
+.branding h1{font-size:48px;letter-spacing:4px;}
+.branding p{margin-top:20px;color:#8892b0;}
+.login-panel{width:420px;padding:45px;background:rgba(0,0,0,0.65);border:1px solid rgba(0,255,255,0.2);border-radius:15px;backdrop-filter:blur(15px);}
+.login-panel h2{text-align:center;margin-bottom:30px;}
+.role-boxes{display:flex;gap:15px;margin-bottom:25px;}
+.role-box{flex:1;padding:15px;border-radius:10px;border:1px solid rgba(0,255,255,0.3);text-align:center;cursor:pointer;position:relative;transition:0.3s;}
+.role-box i{display:block;font-size:20px;margin-bottom:6px;color:#00ffff;}
+.role-box:hover{background:rgba(0,255,255,0.1);}
+.role-box::after{content:attr(data-tooltip);position:absolute;bottom:-35px;left:50%;transform:translateX(-50%);background:#0a192f;padding:5px 10px;font-size:12px;border-radius:6px;opacity:0;transition:0.2s;}
+.role-box:hover::after{opacity:1;}
+input[type="radio"]:checked + .role-box{background:rgba(0,255,255,0.15);}
+.floating-group{position:relative;margin-bottom:25px;}
+.floating-group input{width:100%;padding:12px;background:transparent;border:1px solid #1f2a44;border-radius:8px;color:white;}
+.floating-group input:focus{outline:none;border-color:#00ffff;}
+.floating-group label{position:absolute;top:12px;left:12px;color:#8892b0;font-size:14px;transition:0.2s;pointer-events:none;}
+.floating-group input:focus + label,.floating-group input:valid + label{top:-10px;left:8px;font-size:11px;background:#081229;padding:0 5px;color:#00ffff;}
+.forgot-password{text-align:right;margin-bottom:20px;}
+.forgot-password a{color:#8892b0;text-decoration:none;}
+.forgot-password a:hover{color:#00ffff;}
+.signin-btn{width:100%;padding:12px;background:#00ffff;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;}
+.signin-btn:hover{opacity:0.9;}
+.popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);justify-content:center;align-items:center;z-index:9999;}
+.popup-content{width:420px;padding:35px;background:#0a192f;border-radius:14px;border:1px solid rgba(0,255,255,0.35);position:relative;}
+.close-btn{position:absolute;top:12px;right:18px;font-size:20px;cursor:pointer;color:#00ffff;}
+</style>
+</head>
+
+<body>
+
+<div class="background-grid"></div>
+
+<header>
+<button class="signup-btn" onclick="openPopup()">Create Account</button>
+</header>
+
+<div class="main-container">
+
+<div class="branding">
+<h1>CONTROL<br>PORTAL</h1>
+<p>Secure Role-Based Access System</p>
+</div>
+
+<div class="login-panel">
+<h2>Sign In</h2>
+
+<form id="loginForm">
+
+<div class="role-boxes">
+<input type="radio" id="manager" name="role" hidden required>
+<label for="manager" class="role-box" data-tooltip="Administrative control">
+<i class="fas fa-user-shield"></i>
+<span>Manager</span>
+</label>
+
+<input type="radio" id="dispatcher" name="role" hidden required>
+<label for="dispatcher" class="role-box" data-tooltip="Task distribution">
+<i class="fas fa-network-wired"></i>
+<span>Dispatcher</span>
+</label>
+</div>
+
+<div class="floating-group">
+<input type="text" id="username" required>
+<label>Username</label>
+</div>
+
+<div class="floating-group">
+<input type="password" id="password" required>
+<label>Password</label>
+</div>
+
+<div class="forgot-password">
+<a href="#">Forgot Password?</a>
+</div>
+
+<button type="submit" class="signin-btn">Sign In →</button>
+
+</form>
+</div>
+</div>
+
+<!-- Signup Popup -->
+<div class="popup" id="signupPopup">
+<div class="popup-content">
+<span class="close-btn" onclick="closePopup()">&times;</span>
+<h2>Create Account</h2>
+<form>
+<div class="floating-group">
+<input type="text" required>
+<label>Full Name</label>
+</div>
+<div class="floating-group">
+<input type="email" required>
+<label>Email</label>
+</div>
+<div class="floating-group">
+<input type="text" required>
+<label>Phone Number</label>
+</div>
+<div class="floating-group">
+<input type="text" required>
+<label>Username</label>
+</div>
+<div class="floating-group">
+<input type="password" required>
+<label>Password</label>
+</div>
+<button class="signin-btn">Register →</button>
+</form>
+</div>
+</div>
+
+<script>
+function openPopup(){
+document.getElementById("signupPopup").style.display="flex";
+document.body.style.overflow="hidden";
+}
+
+function closePopup(){
+document.getElementById("signupPopup").style.display="none";
+document.body.style.overflow="auto";
+}
+
+document.getElementById("loginForm").addEventListener("submit",function(e){
+e.preventDefault();
+
+const username=document.getElementById("username").value.trim();
+const password=document.getElementById("password").value.trim();
+const role=document.querySelector('input[name="role"]:checked');
+
+if(username!=="" && password!=="" && role){
+localStorage.setItem("userRole",role.id);
+window.location.href="dashboard.html";
+}else{
+alert("Please fill all details and select a role.");
+}
+});
+</script>
+
+</body>
+</html>

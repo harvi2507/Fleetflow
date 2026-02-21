@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Vehicle Register</title>
+<script src="https://kit.fontawesome.com/4c2a8b8f7f.js" crossorigin="anonymous"></script>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: #081229;
+    color: #e6f1ff;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Background Grid */
+.background-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: moveGrid 20s linear infinite;
+    z-index: 0;
+}
+
+@keyframes moveGrid {
+    from { background-position: 0 0; }
+    to { background-position: 40px 40px; }
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background: rgba(0,0,0,0.75);
+    border-right: 1px solid rgba(0,255,255,0.2);
+    padding: 30px 20px;
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #00ffff;
+}
+
+.nav-links {
+    list-style: none;
+}
+
+.nav-links li {
+    margin-bottom: 18px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #e6f1ff;
+    padding: 10px 12px;
+    display: block;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+.nav-links a:hover {
+    background: rgba(0,255,255,0.1);
+    color: #00ffff;
+}
+
+/* Main */
+.main {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.register-btn {
+    background: #00ffff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.vehicle-list {
+    background: rgba(0,0,0,0.65);
+    border: 1px solid rgba(0,255,255,0.2);
+    border-radius: 15px;
+    padding: 25px;
+}
+
+.vehicle-card {
+    padding: 15px;
+    border-bottom: 1px solid rgba(0,255,255,0.1);
+    position: relative;
+    transition: 0.2s;
+}
+
+.vehicle-card:hover {
+    background: rgba(0,255,255,0.05);
+}
+
+.vehicle-card:last-child {
+    border-bottom: none;
+}
+
+.vehicle-card h4 {
+    color: #00ffff;
+    margin-bottom: 5px;
+}
+
+/* Status Badge */
+.status-badge {
+    position: absolute;
+    right: 120px;
+    top: 15px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.available {
+    background: rgba(0,255,255,0.2);
+    color: #00ffff;
+}
+
+.in-progress {
+    background: rgba(255,165,0,0.2);
+    color: orange;
+}
+
+/* Buttons */
+.delete-btn {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    background: transparent;
+    border: 1px solid #ff4d4d;
+    color: #ff4d4d;
+    padding: 4px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.delete-btn:hover {
+    background: #ff4d4d;
+    color: white;
+}
+
+.status-btn {
+    margin-top: 10px;
+    background: transparent;
+    border: 1px solid #00ffff;
+    color: #00ffff;
+    padding: 4px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.status-btn:hover {
+    background: #00ffff;
+    color: black;
+}
+
+/* Popup */
+.popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(6px);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.popup-content {
+    width: 400px;
+    padding: 30px;
+    background: #0a192f;
+    border-radius: 12px;
+    border: 1px solid rgba(0,255,255,0.3);
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 10px;
+    background: #0f1f3d;
+    border: 1px solid #00ffff;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 14px;
+}
+
+/* Dropdown options */
+.input-group select option {
+    background: #0a192f;
+    color: #ffffff;
+}
+
+.input-group select:focus,
+.input-group input:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(0,255,255,0.5);
+}
+
+/* Save Button */
+.save-btn {
+    width: 100%;
+    padding: 10px;
+    background: #00ffff;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="background-grid"></div>
+
+<div class="container">
+
+<div class="sidebar">
+    <h2>CONTROL</h2>
+    <ul class="nav-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="vehicle_register.html">Fleet Management</a></li>
+            <li><a href="trip_dispatcher.html">Dispatch Center</a></li>
+            <li><a href="maintenance_log.html">Maintenance & Repair</a></li>
+            <li><a href="fuel_expenses.html">Fuel Summary</a></li>
+            <li><a href="driver_details.html">Driver Management</a></li>
+             <li><a href="analysis.html">Analytics</a></li>
+    </ul>
+</div>
+
+<div class="main">
+    <div class="top-bar">
+        <h1>Vehicle Register</h1>
+        <button class="register-btn" onclick="openPopup()">+ Register Vehicle</button>
+    </div>
+
+    <div class="vehicle-list" id="vehicleList">
+        <h3>Existing Vehicles</h3>
+    </div>
+</div>
+
+</div>
+
+<!-- Popup -->
+<div class="popup" id="vehiclePopup">
+    <div class="popup-content">
+        <h3>New Vehicle</h3>
+
+        <div class="input-group">
+            <input type="text" id="vehicleNumber" placeholder="Vehicle Number">
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="discPlate" placeholder="Disc Plate">
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="loadCapacity" placeholder="Load Capacity (kg)">
+        </div>
+
+        <div class="input-group">
+            <select id="vehicleType">
+                <option value="">Select Vehicle Type</option>
+                <option value="Truck">Truck</option>
+                <option value="Van">Van</option>
+            </select>
+        </div>
+
+        <button class="save-btn" onclick="saveVehicle()">Save</button>
+    </div>
+</div>
+
+<script>
+function openPopup() {
+    document.getElementById("vehiclePopup").style.display = "flex";
+}
+
+function closePopup() {
+    document.getElementById("vehiclePopup").style.display = "none";
+}
+
+function saveVehicle() {
+function saveVehicle() {
+    const number = document.getElementById("vehicleNumber").value;
+    const disc = document.getElementById("discPlate").value;
+    const load = document.getElementById("loadCapacity").value;
+    const type = document.getElementById("vehicleType").value;
+
+    if (!number || !disc || !load || !type) {
+        alert("Please fill all fields.");
+        return;
+    }
+
+    fetch("http://localhost:3000/api/vehicles", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            number,
+            disc,
+            load,
+            type
+        })
+    })
+    .then(res => res.json())
+    .then(() => {
+        closePopup();
+        loadVehicles(); // reload from DB
+    })
+    .catch(err => console.error(err));
+
+    document.getElementById("vehicleNumber").value = "";
+    document.getElementById("discPlate").value = "";
+    document.getElementById("loadCapacity").value = "";
+    document.getElementById("vehicleType").value = "";
+}}
+function loadVehicles() {
+    fetch("http://localhost:3000/api/vehicles")
+        .then(res => res.json())
+        .then(vehicles => {
+            const container = document.getElementById("vehicleList");
+            container.innerHTML = "<h3>Existing Vehicles</h3>";
+
+            vehicles.forEach(v => {
+                const card = document.createElement("div");
+                card.className = "vehicle-card";
+
+                card.innerHTML = `
+                    <h4>${v.number} (${v.type})</h4>
+                    <p>Disc Plate: ${v.disc}</p>
+                    <p>Load Capacity: ${v.load} kg</p>
+
+                    <span class="status-badge ${v.status === "available" ? "available" : "in-progress"}">
+                        ${v.status === "available" ? "Available" : "In Progress"}
+                    </span>
+
+                    <button class="delete-btn" onclick="deleteVehicle(${v.id})">Delete</button>
+                    <button class="status-btn" onclick="toggleVehicleStatus(${v.id})">
+                        ${v.status === "available" ? "Mark In Progress" : "Mark Available"}
+                    </button>
+                `;
+
+                container.appendChild(card);
+            });
+        });
+}
+function toggleVehicleStatus(id) {
+    fetch(`http://localhost:3000/api/vehicles/${id}/status`, {
+        method: "PUT"
+    }).then(() => loadVehicles());
+}
+
+function deleteVehicle(id) {
+    fetch(`http://localhost:3000/api/vehicles/${id}`, {
+        method: "DELETE"
+    }).then(() => loadVehicles());
+}
+window.onload = loadVehicles;
+</script>
+
+</body>
+</html>
